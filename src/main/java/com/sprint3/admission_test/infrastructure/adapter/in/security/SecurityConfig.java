@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     private final User DEFAULT_USER = new User(
             "Admin",
-            "Password",
+            "$2a$10$ANJaguZHO6i.sfkhB0BluOEhncdeyzquhRr5EBDWY7Mq7h1WD9vUu",
             List.of("ROLE_ADMIN")
     );
 
@@ -40,7 +40,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(r -> r
-                        .requestMatchers("/*").permitAll()
+                        .requestMatchers("/api/auth").permitAll()
+                        //.requestMatchers("/api/medications/*").authenticated()
                         .anyRequest().permitAll()
                 )
                 .build();
