@@ -5,13 +5,15 @@ import com.sprint3.admission_test.domain.model.Medication;
 import com.sprint3.admission_test.domain.ports.in.CategoryDTO;
 import com.sprint3.admission_test.domain.ports.in.MedicationDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface IMedicationMapper {
 
-    MedicationDTO toDTO(MedicationDTO medicationDTO);
+    @Mapping(source = "category.name",target = "categoryName" )
+    MedicationDTO toDTO(Medication Medication);
 
     Medication toEntity(MedicationDTO MedicationDTO);
 
