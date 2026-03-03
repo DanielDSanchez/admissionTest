@@ -1,8 +1,11 @@
 package com.sprint3.admission_test.infrastructure.adapter.in.security;
 
+import com.sprint3.admission_test.application.ports.in.IAuthorizationUseCase;
 import com.sprint3.admission_test.domain.ports.out.UserDetailsImpl;
+import com.sprint3.admission_test.infrastructure.filter.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
-@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final User DEFAULT_USER = new User(
@@ -30,25 +33,25 @@ public class SecurityConfig {
             List.of("ROLE_ADMIN")
     );
 
+
     @Bean
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        r ->
-                                r.requestMatchers("/*")
-                                        .hasAuthority("ROLE_ADMIN"))
+                .authorizeHttpRequests(r -> r
+                        .requestMatchers("/*").permitAll()
+                        .anyRequest().permitAll()
+                )
                 .build();
     }
 
     @Bean
     UserDetailsService userDetailsService() {
         return (username) -> {
-            return Optional.ofNullable(name)
+            return Optional.ofNullable(username)
                     .filter(n -> DEFAULT_USER.getUser().equals(n))
-                    .map(name -> UserDetailsImpl.builder()
-                            .username("Admin").password("Admin")
-                            .build())
+                    .map(name -> UserDetailsImpl.of(DEFAULT_USER))
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         };
     }
@@ -75,7 +78,7 @@ public class SecurityConfig {
 
     @Data
     @AllArgsConstructor
-    private static class User {
+    public static class User {
         private String user;
         private String password;
         private List<String> roles;

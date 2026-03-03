@@ -1,7 +1,7 @@
 package com.sprint3.admission_test.domain.ports.out;
 
+import com.sprint3.admission_test.infrastructure.adapter.in.security.SecurityConfig;
 import lombok.*;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +19,10 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private List<String> roles;
 
-    public static UserDetailsImpl of(SecurityProperties.User user) {
+    public static UserDetailsImpl of(SecurityConfig.User user) {
         return UserDetailsImpl.builder()
                 .password(user.getPassword())
-                .username(user.getName())
+                .username(user.getUser())
                 .roles(user.getRoles())
                 .build();
     }
