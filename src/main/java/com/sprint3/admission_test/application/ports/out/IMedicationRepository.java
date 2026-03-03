@@ -8,4 +8,5 @@ public interface IMedicationRepository {
 
     Optional<Medication> findById(Long id);
 
+    Medication save(Medication medication);
 }
